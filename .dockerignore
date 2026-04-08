@@ -1,0 +1,29 @@
+# Ignore Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.eggs/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Ignore IDE settings
+.vscode/
+.idea/
+
+# Ignore Streamlit state and local files
+.streamlit/
+data/
+logs/
+tmp/
