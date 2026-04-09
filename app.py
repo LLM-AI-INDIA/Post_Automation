@@ -154,22 +154,36 @@ if submitted:
                     st.info("The workflow started but took too long to respond. Please check your n8n dashboard to see if the process finished correctly.")
                 else:
                     st.error(f"⚠️ Server Error — Status {response.status_code}")
-                
+
                 with st.expander("Show Technical Details"):
                     st.code(response.text[:1000] + ("..." if len(response.text) > 1000 else ""), language="html")
             else:
                 try:
                     data = response.json()
                     if isinstance(data, dict):
-                        if data.get("success") is False or "error" in data:
-                            st.error("❌ Workflow failed in n8n!")
-                            st.json(data)
+                        post_type_resp = data.get("post_type", "")
+                        is_success = data.get("success", False)
+                        message = data.get("message", "")
+
+                        if is_success:
+                            st.success(f"✅ {message}")
+                            if post_type_resp == "image":
+                                title = data.get("title", "")
+                                if title:
+                                    st.info(f"📌 **Title:** {title}")
+                            elif post_type_resp == "article":
+                                title = data.get("title", "")
+                                article_url = data.get("article_url", "")
+                                if title:
+                                    st.info(f"📌 **Title:** {title}")
+                                if article_url:
+                                    st.info(f"🔗 **Article URL:** {article_url}")
                         else:
-                            st.success("✅ Published to LinkedIn successfully!")
+                            st.warning(f"⚠️ {message}")
                     else:
                         st.success("✅ Published to LinkedIn successfully!")
                 except ValueError:
-                    st.success("✅ Published to LinkedIn successfully!")
+                    st.success("✅ Response received from n8n.")
 
         except Exception as e:
             loader.empty()
