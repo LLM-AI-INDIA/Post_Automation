@@ -20,48 +20,158 @@ section[data-testid="stMain"] > div {
     animation: fadeUp 0.5s ease;
 }
 
-/* ── Input Styling ── */
-.stTextInput>div>div>input,
-.stSelectbox>div>div>div,
-.stTextArea>div>div>textarea {
+/* ── Input Styling (shared) ── */
+/* ── Text Input: match dropdown style ── */
+.stTextInput>div>div {
     background-color: #ffffff !important;
-    border: 1.5px solid #e0e5ec !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    max-height: 54px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02) !important;
+    cursor: text !important;
+}
+.stTextInput>div>div>input {
+    border-radius: 0 !important;
+}
+.stTextInput>div>div:hover {
+    border-color: #b0bec5 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03) !important;
+}
+.stTextInput>div>div:focus-within {
+    border-color: #0A66C2 !important;
+    box-shadow: 0 0 0 4px rgba(10,102,194,0.1), 0 4px 12px rgba(10,102,194,0.08) !important;
+}
+.stTextInput>div>div>input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     color: #1a1a2e !important;
-    border-radius: 12px !important;
     font-family: 'Inter', sans-serif !important;
-    font-size: 0.95rem !important;
-    padding: 0.75rem 1rem !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    font-size: 1rem !important;
+    font-weight: 450 !important;
+    height: 100% !important;
+    padding: 0 1.15rem !important;
+    line-height: normal !important;
+    width: 100% !important;
+    outline: none !important;
 }
 
-/* Fix text alignment in Selectbox specifically */
+/* ── Selectbox: outer wrapper = unified box ── */
+.stSelectbox>div>div {
+    background-color: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    height: 54px !important;
+    min-height: 54px !important;
+    max-height: 54px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02) !important;
+    cursor: pointer !important;
+}
+.stSelectbox>div>div:hover {
+    border-color: #b0bec5 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03) !important;
+}
+/* Kill ALL borders, padding, margins on every nested element inside selectbox */
+.stSelectbox>div>div * {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+/* The main value container */
 .stSelectbox>div>div>div {
     display: flex !important;
     align-items: center !important;
-    min-height: 50.4px !important; /* matches input height */
+    height: 100% !important;
+    padding-left: 1.15rem !important;
+    padding-right: 0.5rem !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: 450 !important;
+    color: #1a1a2e !important;
+}
+/* All deeply nested divs inside selectbox */
+.stSelectbox>div>div>div div {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+/* Arrow container */
+.stSelectbox>div>div>div:last-child {
+    padding-right: 0.85rem !important;
+}
+.stSelectbox>div>div svg {
+    color: #94a3b8 !important;
+    flex-shrink: 0 !important;
+    width: 18px !important;
+    height: 18px !important;
 }
 
-.stTextInput>div>div>input:focus,
-.stSelectbox>div>div>div:focus,
+/* ── Textarea ── */
+.stTextArea>div>div>textarea {
+    background-color: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    color: #1a1a2e !important;
+    border-radius: 14px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: 450 !important;
+    padding: 0.9rem 1.15rem !important;
+    min-height: 110px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+.stTextArea>div>div>textarea:hover {
+    border-color: #b0bec5 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.03) !important;
+}
+
 .stTextArea>div>div>textarea:focus {
     border-color: #0A66C2 !important;
-    box-shadow: 0 0 0 3px rgba(10,102,194,0.12), 0 2px 8px rgba(10,102,194,0.08) !important;
+    box-shadow: 0 0 0 4px rgba(10,102,194,0.1), 0 4px 12px rgba(10,102,194,0.08) !important;
+}
+.stSelectbox>div>div:focus-within {
+    border-color: #0A66C2 !important;
+    box-shadow: 0 0 0 4px rgba(10,102,194,0.1), 0 4px 12px rgba(10,102,194,0.08) !important;
 }
 .stTextInput>div>div>input::placeholder,
 .stTextArea>div>div>textarea::placeholder {
-    color: #9ca3af !important;
+    color: #a0aec0 !important;
+    font-weight: 400 !important;
+    text-align: left !important;
 }
 
 /* ── Labels ── */
 .stTextInput label, .stSelectbox label, .stTextArea label {
-    color: #374151 !important;
+    color: #334155 !important;
     font-weight: 600 !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.02em !important;
+    font-size: 0.88rem !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase !important;
+    margin-bottom: 0.35rem !important;
 }
 
 /* ── Submit Button ── */
+.stButton {
+    margin-top: 1.5rem !important;
+}
 .stButton>button {
     width: 100%;
     background: linear-gradient(135deg, #0A66C2 0%, #0d8bf0 100%) !important;
