@@ -52,17 +52,19 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-WEBHOOK_URL = 'https://yokesh01.app.n8n.cloud/webhook/e1e9a75e-172b-4b25-93ba-e1f27744a78c'
+WEBHOOK_URL = 'https://n8n.llmatscale.ai/webhook/e1e9a75e-172b-4b25-93ba-e1f27744a78c'
 
 # ── Form Inputs ─────────────────────────────────────────────────────────
 user_prompt = st.text_input("Topic *", placeholder="Enter the content topic")
-post_type = st.selectbox("Post Type *", ["Select Post Type", "image", "article"])
+post_type = st.selectbox("Post Type *", ["Select Post Type", "Image", "Article", "Architecture Diagram"])
 
 article_data = ""
-if post_type == "image":
+if post_type == "Image":
     article_data = st.text_input("Image URL (Optional)", placeholder="https://example.com/image.png")
-elif post_type == "article":
+elif post_type == "Article":
     article_data = st.text_input("Article URL (Optional)", placeholder="https://example.com/article")
+elif post_type == "Architecture Diagram":
+    st.caption("A PlantUML architecture diagram will be generated and posted as an image.")
 
 def validate_inputs():
     if not user_prompt.strip():
@@ -72,19 +74,35 @@ def validate_inputs():
     return True
 
 # ── Loading Step HTML Generator ─────────────────────────────────────────
-def build_loading_html(active_step=0):
-    steps_data = [
-        ("⚡", "Connecting to n8n..."),
-        ("🤖", "AI generating content..."),
-        ("📝", "Formatting post..."),
-        ("🚀", "Publishing to LinkedIn..."),
-    ]
-    status_messages = [
-        "Connecting to n8n...",
-        "AI is generating your content...",
-        "Formatting your post...",
-        "Publishing to LinkedIn...",
-    ]
+def build_loading_html(active_step=0, is_diagram=False):
+    if is_diagram:
+        steps_data = [
+            ("⚡", "Connecting to n8n..."),
+            ("🤖", "AI generating content..."),
+            ("📐", "Generating PlantUML diagram..."),
+            ("🖼️", "Rendering diagram image..."),
+            ("🚀", "Publishing to LinkedIn..."),
+        ]
+        status_messages = [
+            "Connecting to n8n...",
+            "AI is generating your content...",
+            "Generating PlantUML architecture diagram...",
+            "Rendering diagram via Kroki...",
+            "Publishing to LinkedIn...",
+        ]
+    else:
+        steps_data = [
+            ("⚡", "Connecting to n8n..."),
+            ("🤖", "AI generating content..."),
+            ("📝", "Formatting post..."),
+            ("🚀", "Publishing to LinkedIn..."),
+        ]
+        status_messages = [
+            "Connecting to n8n...",
+            "AI is generating your content...",
+            "Formatting your post...",
+            "Publishing to LinkedIn...",
+        ]
     steps_html = ""
     for i, (icon, label) in enumerate(steps_data):
         if i < active_step:
@@ -124,26 +142,38 @@ if submitted:
             "article": article_data.strip()
         }
 
+        is_diagram = post_type == "Architecture Diagram"
+
         # Show step-by-step loading overlay
         loader = st.empty()
 
         # Step 0: Connecting
-        loader.markdown(build_loading_html(0), unsafe_allow_html=True)
+        loader.markdown(build_loading_html(0, is_diagram), unsafe_allow_html=True)
         time.sleep(1)
 
         # Step 1: AI Generating (runs during actual API call)
-        loader.markdown(build_loading_html(1), unsafe_allow_html=True)
+        loader.markdown(build_loading_html(1, is_diagram), unsafe_allow_html=True)
 
         try:
             response = requests.post(WEBHOOK_URL, json=payload, headers={"Content-Type": "application/json"})
 
-            # Step 2: Formatting
-            loader.markdown(build_loading_html(2), unsafe_allow_html=True)
-            time.sleep(0.8)
-
-            # Step 3: Publishing
-            loader.markdown(build_loading_html(3), unsafe_allow_html=True)
-            time.sleep(0.6)
+            if is_diagram:
+                # Step 2: Generating diagram
+                loader.markdown(build_loading_html(2, is_diagram), unsafe_allow_html=True)
+                time.sleep(0.8)
+                # Step 3: Rendering
+                loader.markdown(build_loading_html(3, is_diagram), unsafe_allow_html=True)
+                time.sleep(0.6)
+                # Step 4: Publishing
+                loader.markdown(build_loading_html(4, is_diagram), unsafe_allow_html=True)
+                time.sleep(0.6)
+            else:
+                # Step 2: Formatting
+                loader.markdown(build_loading_html(2, is_diagram), unsafe_allow_html=True)
+                time.sleep(0.8)
+                # Step 3: Publishing
+                loader.markdown(build_loading_html(3, is_diagram), unsafe_allow_html=True)
+                time.sleep(0.6)
 
             # Clear overlay
             loader.empty()
@@ -178,10 +208,17 @@ if submitted:
                                     st.info(f"📌 **Title:** {title}")
                                 if article_url:
                                     st.info(f"🔗 **Article URL:** {article_url}")
+                            elif post_type_resp in ("diagram", "architecture diagram"):
+                                title = data.get("title", "")
+                                if title:
+                                    st.info(f"📐 **Title:** {title}")
+                                st.info("🖼️ PlantUML diagram was rendered and posted as an image.")
+                            st.markdown("🔗 **LinkedIn URL:** [linkedin.com/company/llm-at-scale](https://www.linkedin.com/company/llm-at-scale)")
                         else:
                             st.warning(f"⚠️ {message}")
                     else:
                         st.success("✅ Published to LinkedIn successfully!")
+                        st.markdown("🔗 **LinkedIn URL:** [linkedin.com/company/llm-at-scale](https://www.linkedin.com/company/llm-at-scale)")
                 except ValueError:
                     st.success("✅ Response received from n8n.")
 
